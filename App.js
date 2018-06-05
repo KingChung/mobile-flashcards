@@ -6,6 +6,7 @@ import { createStackNavigator } from "react-navigation";
 import { Provider } from 'react-redux';
 import Home from './screens/Home';
 import Expo from 'expo'
+import DeckDetail from "./screens/DeckDetail";
 
 
 class SettingsScreen extends React.Component {
@@ -23,7 +24,7 @@ class SettingsScreen extends React.Component {
 
 class DeckScreen extends React.Component {
   static navigationOptions = {
-    header: null
+      title: "Deck Detail"
   };
   render() {
     return (
@@ -38,7 +39,7 @@ const Tabs = createStackNavigator(
   {
     Home: Home,
     Settings: SettingsScreen,
-    Deck: DeckScreen
+    Deck: DeckDetail
   },
   {
     navigationOptions: {

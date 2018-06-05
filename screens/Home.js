@@ -18,11 +18,13 @@ class AddDeckButton extends React.Component {
   }
 }
 
-const DeckItem = function({ title, navigation }) {
+const DeckItem = function({ deck, navigation }) {
   return (
-    <CardItem bordered button onPress={() => navigation.navigate('Deck')}>
+    <CardItem bordered button onPress={() => navigation.navigate('Deck', {
+        deck
+    })}>
       <Body style={style.item}>
-        <Text>{title}</Text>
+        <Text>{deck.title}</Text>
       </Body>
     </CardItem>
   );
@@ -34,8 +36,7 @@ class Home extends React.Component {
     headerRight: <AddDeckButton navigation={navigation} />
   });
   componentDidMount() {
-      console.log(123123123);
-    this.props.dispatch(requestDecks());
+        this.props.dispatch(requestDecks());
   }
   render() {
     const { decks, navigation } = this.props;
@@ -47,7 +48,7 @@ class Home extends React.Component {
               Object.values(decks).map(deck => (
                 <DeckItem
                   key={deck.title}
-                  title={deck.title}
+                  deck={deck}
                   navigation={navigation}
                 />
               ))}
