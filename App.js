@@ -22,19 +22,6 @@ class SettingsScreen extends React.Component {
   }
 }
 
-class DeckScreen extends React.Component {
-  static navigationOptions = {
-      title: "Deck Detail"
-  };
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Deck Detail</Text>
-      </View>
-    );
-  }
-}
-
 const Tabs = createStackNavigator(
   {
     Home: Home,

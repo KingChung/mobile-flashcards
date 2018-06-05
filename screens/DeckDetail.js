@@ -1,11 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Dimensions
-} from "react-native";
+import { TouchableOpacity, StyleSheet, Dimensions, Modal } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { requestDecks } from "../actions";
 import {
@@ -16,9 +11,14 @@ import {
   Body,
   Text,
   DeckSwiper,
-  View
+  View,
+  Label,
+  Form,
+  Input,
+  Item,
+  Button
 } from "native-base";
-import DeckCard from './../components/Card';
+import DeckCard from "./../components/Card";
 
 class DeckDetail extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -42,32 +42,83 @@ class DeckDetail extends React.Component {
     };
   };
   state = {
-    isNewCardMode: false
+    isCardModalVisible: false,
+    newQuestionContent: "",
+    newQuestionAnswer: "",
+    deck: {}
   };
-  _handleCreateNewCard = () => {
-    this.setState({ isNewCardMode: true });
-  };
-  componentWillMount() {
+  componentWillMount = () => {
     this.props.navigation.setParams({
-      handleCreateNewCard: this._handleCreateNewCard
+      handleCreateNewCard: () => this.setCardModalVisible(true)
     });
-  }
+    this.setState({
+      deck: this.props.navigation.getParam("deck")
+    });
+  };
+  componentDidMount = () => {};
+  setCardModalVisible = showOrNot => {
+    this.setState({ isCardModalVisible: showOrNot });
+  };
+  handleSaveCard = () => {
+    // @TODO save card
+  };
   render() {
-    const { navigation } = this.props;
-    const { questions } = navigation.getParam("deck");
-    return this.state.isNewCardMode ? (
-      <View>
-        <Text>123123</Text>
-      </View>
+    const { questions = [] } = this.state.deck;
+    return this.state.isCardModalVisible ? (
+      <Modal
+        style={{ flex: 1 }}
+        animationType="slide"
+        transparent={false}
+        visible={this.state.isCardModalVisible}
+      >
+        <Container>
+          <TouchableOpacity
+            style={{ position: "absolute", top: 40, right: 20 }}
+            onPress={() => this.setCardModalVisible(false)}
+          >
+            <FontAwesome name="times" size={24} />
+          </TouchableOpacity>
+          <Content style={{ marginTop: 70, padding: 15 }}>
+            <Form>
+              <Item floatingLabel>
+                <Label>Question</Label>
+                <Input
+                  placeholderLabel={"Question"}
+                  onChangeText={text =>
+                    this.setState({ newQuestionContent: text })
+                  }
+                />
+              </Item>
+              <Item floatingLabel>
+                <Label>Answer</Label>
+                <Input
+                  onChangeText={text =>
+                    this.setState({ newQuestionAnswer: text })
+                  }
+                />
+              </Item>
+              <Button
+                block
+                style={{ margin: 10, marginTop: 20 }}
+                onPress={this.handleSaveCard}
+              >
+                <Text>SAVE</Text>
+              </Button>
+            </Form>
+          </Content>
+        </Container>
+      </Modal>
     ) : (
       <Container>
         <View style={{ flex: 1 }}>
           <DeckSwiper
             dataSource={questions.map((q, index) => {
-              q.index = index + 1
-              return q
+              q.index = index + 1;
+              return q;
             })}
-            renderItem={item => <DeckCard card={item} totalCards={questions.length}/>}
+            renderItem={item => (
+              <DeckCard card={item} totalCards={questions.length} />
+            )}
           />
         </View>
         <View style={style.fixedFooter}>
