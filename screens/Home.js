@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestDecks } from "../actions";
 import { Content, Container, Card, CardItem, Body, Text } from "native-base";
 
@@ -24,7 +24,7 @@ const DeckItem = function({ deck, navigation }) {
         deck
     })}>
       <Body style={style.item}>
-        <Text>{deck.title}</Text>
+        <Text>{deck.title} <MaterialCommunityIcons name="cards-outline" size={24} /> {deck.questions.length}</Text>
       </Body>
     </CardItem>
   );

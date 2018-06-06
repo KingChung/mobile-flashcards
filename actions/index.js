@@ -12,3 +12,11 @@ export const addDeck = (deck) => ({
 export const requestDecks = () => ({
     type: REQUEST_DECKS
 })
+
+
+export const ADD_CARD = 'ADD_CARD'
+export const addCard = ({title, card}) => ({
+    type: ADD_CARD,
+    title,
+    card
+})

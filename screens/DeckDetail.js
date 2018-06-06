@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { TouchableOpacity, StyleSheet, Dimensions, Modal } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { requestDecks } from "../actions";
+import { requestDecks, ADD_CARD } from "../actions";
 import {
   Content,
   Container,
@@ -19,6 +19,7 @@ import {
   Button
 } from "native-base";
 import DeckCard from "./../components/Card";
+import CardForm from "./../components/CardForm";
 
 class DeckDetail extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -43,27 +44,20 @@ class DeckDetail extends React.Component {
   };
   state = {
     isCardModalVisible: false,
-    newQuestionContent: "",
-    newQuestionAnswer: "",
     deck: {}
   };
   componentWillMount = () => {
     this.props.navigation.setParams({
       handleCreateNewCard: () => this.setCardModalVisible(true)
     });
-    this.setState({
-      deck: this.props.navigation.getParam("deck")
-    });
   };
-  componentDidMount = () => {};
   setCardModalVisible = showOrNot => {
     this.setState({ isCardModalVisible: showOrNot });
   };
-  handleSaveCard = () => {
-    // @TODO save card
-  };
   render() {
-    const { questions = [] } = this.state.deck;
+    const { navigation, decks } = this.props;
+    const { title } = navigation.getParam("deck");
+    const { questions } = decks[title];
     return this.state.isCardModalVisible ? (
       <Modal
         style={{ flex: 1 }}
@@ -71,42 +65,13 @@ class DeckDetail extends React.Component {
         transparent={false}
         visible={this.state.isCardModalVisible}
       >
-        <Container>
-          <TouchableOpacity
-            style={{ position: "absolute", top: 40, right: 20 }}
-            onPress={() => this.setCardModalVisible(false)}
-          >
-            <FontAwesome name="times" size={24} />
-          </TouchableOpacity>
-          <Content style={{ marginTop: 70, padding: 15 }}>
-            <Form>
-              <Item floatingLabel>
-                <Label>Question</Label>
-                <Input
-                  placeholderLabel={"Question"}
-                  onChangeText={text =>
-                    this.setState({ newQuestionContent: text })
-                  }
-                />
-              </Item>
-              <Item floatingLabel>
-                <Label>Answer</Label>
-                <Input
-                  onChangeText={text =>
-                    this.setState({ newQuestionAnswer: text })
-                  }
-                />
-              </Item>
-              <Button
-                block
-                style={{ margin: 10, marginTop: 20 }}
-                onPress={this.handleSaveCard}
-              >
-                <Text>SAVE</Text>
-              </Button>
-            </Form>
-          </Content>
-        </Container>
+        <TouchableOpacity style={{ position: "absolute", top: 40, right: 20, zIndex: 99 }} onPress={() => this.setCardModalVisible(false)}>
+          <FontAwesome name="times" size={24} />
+        </TouchableOpacity>
+        <CardForm
+          onSave={() => this.setCardModalVisible(false)}
+          title={title}
+        />
       </Modal>
     ) : (
       <Container>
@@ -122,7 +87,11 @@ class DeckDetail extends React.Component {
           />
         </View>
         <View style={style.fixedFooter}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              //@todo Start quiz
+            }}
+          >
             <Text style={{ color: "#fff", fontWeight: "bold" }}>
               Start Quiz
             </Text>

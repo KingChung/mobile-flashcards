@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { ADD_DECK, REQUEST_DECKS } from "../actions";
+import { ADD_DECK, REQUEST_DECKS, ADD_CARD } from "../actions";
 
 const DEFAULTDECKS = {
   React: {
@@ -37,6 +37,16 @@ const decks = (state = DEFAULTDECKS, action) => {
             break;
         case REQUEST_DECKS:
             return state
+        case ADD_CARD:
+            const { title, card } = action
+            console.log(title, card);
+            return {
+              ...state,
+              [title]: {
+                ...state[title],
+                questions: state[title].questions.concat([card])
+              }
+            }
         default:
             break;
     }
