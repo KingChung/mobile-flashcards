@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import Home from "./screens/Home";
 import Expo from "expo";
 import DeckDetail from "./screens/DeckDetail";
+import Quiz from "./screens/Quiz";
 
 class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -32,7 +33,8 @@ const Tabs = createStackNavigator(
   {
     Home: Home,
     Settings: SettingsScreen,
-    Deck: DeckDetail
+    Deck: DeckDetail,
+    Quiz: Quiz
   },
   {
     navigationOptions: {

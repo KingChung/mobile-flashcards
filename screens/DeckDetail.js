@@ -86,17 +86,14 @@ class DeckDetail extends React.Component {
             )}
           />
         </View>
-        <View style={style.fixedFooter}>
-          <TouchableOpacity
-            onPress={() => {
-              //@todo Start quiz
-            }}
-          >
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              Start Quiz
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={style.fixedFooter}
+          onPress={() => this.props.navigation.navigate("Quiz", {title})}
+        >
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>
+            Start Quiz
+          </Text>
+        </TouchableOpacity>
       </Container>
     );
   }
@@ -115,7 +112,7 @@ const style = StyleSheet.create({
     padding: 15,
     backgroundColor: "rgb(0, 179, 134)"
   }
-});
+})
 
 const mapStateToProps = state => {
   const { decks } = state;

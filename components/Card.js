@@ -21,7 +21,6 @@ export default class DeckCard extends React.Component {
     }));
   };
   componentDidMount = () => {
-    console.log(this.props);
   };
   render() {
     const { card, totalCards } = this.props;
