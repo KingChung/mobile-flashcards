@@ -78,8 +78,10 @@ class DeckDetail extends React.Component {
         <View style={{ flex: 1 }}>
           <DeckSwiper
             dataSource={questions.map((q, index) => {
-              q.index = index + 1;
-              return q;
+              return {
+                ...q, 
+                index: index + 1,
+              }
             })}
             renderItem={item => (
               <DeckCard card={item} totalCards={questions.length} />

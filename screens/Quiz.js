@@ -22,7 +22,13 @@ import {
   Item,
   Button
 } from "native-base";
-import DeckCard from "./../components/Card";
+import QuizCard from "./../components/QuizCard";
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 class Quiz extends React.Component {
   static navigationOptions = {
@@ -30,121 +36,117 @@ class Quiz extends React.Component {
   };
   state = {
     toggleDeckSwiper: true,
-    quiz: []
+    quiz: [],
+    score: 0
+  };
+  createQuiz = (questions = []) => {
+    const bank = Object.values(questions).map(item => item.answer);
+    return questions.map((item, index) => {
+      const questionAnswer = bank[getRandomInt(0, questions.length)];
+      return {
+        ...item,
+        index: index + 1,
+        questionAnswer,
+        answer: questionAnswer === item.answer,
+        correctAnswer: item.answer
+      };
+    });
   };
   componentWillMount = () => {
     const { decks, navigation } = this.props;
-    const deck = decks[navigation.getParam("title")];
+    const { questions } = decks[navigation.getParam("title")];
+    const quiz = this.createQuiz(questions);
     this.setState({
-      quiz: deck.questions
+      quiz
     });
   };
-  handleCheckQuestion = (question, trueOrFalse) => {};
+  handleCheckQuestion = (card, trueOrFalse) => {
+    let score = this.state.score;
+    card.answer === trueOrFalse && score++;
+    this.setState({
+      score
+    })
+  };
   render() {
     const { navigation } = this.props;
     const title = navigation.getParam("title");
-    const { quiz, toggleDeckSwiper } = this.state;
+    const { quiz, toggleDeckSwiper, answerBank, score } = this.state;
     return (
-      toggleDeckSwiper && <View style={{ justifyContent: "center", flex: 1 }}>
-        <StatusBar barStyle={"dark-content"} />
-        <View style={{ flex: 2, paddingTop: 45 }}>
-          <DeckSwiper
-            ref={c => (this._deckSwiper = c)}
-            looping={false}
-            dataSource={
-              quiz &&
-              quiz.map((q, index) => {
-                q.index = index + 1;
-                return q;
-              })
-            }
-            renderEmpty={() => {
-              return (
-                <View
-                  style={{
-                    height: 500,
-                    width,
-                    paddingTop: 45,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    paddingRight: 30,
-                    paddingLeft: 30
-                  }}
-                >
-                  <Text style={{ fontSize: 24 }}>Score: {100}</Text>
-                  <Button
-                    block
-                    style={{ marginTop: 15 }}
-                    onPress={() => navigation.goBack(null)}
-                  >
-                    <Text>GO BACK TO {title} DECK</Text>
-                  </Button>
-
-                  <Button
-                    block
-                    warning
-                    style={{ marginTop: 15 }}
-                    onPress={() => {
+      toggleDeckSwiper && (
+        <View style={{ justifyContent: "center", flex: 1 }}>
+          <StatusBar barStyle={"dark-content"} />
+          <View style={{ flex: 2, paddingTop: 45 }}>
+            <DeckSwiper
+              ref={c => (this._deckSwiper = c)}
+              looping={false}
+              dataSource={quiz}
+              renderEmpty={() => {
+                let totalScore = 0;
+                if (Number.isInteger(quiz.length)) {
+                  totalScore = score / quiz.length * 100;
+                }
+                return (
+                  <View style={style.scoreCard}>
+                    <Text style={{ fontSize: 24 }}>Score: {totalScore}</Text>
+                    <Button
+                      block
+                      style={{ marginTop: 15 }}
+                      onPress={() => navigation.goBack(null)}
+                    >
+                      <Text>GO BACK TO {title} DECK</Text>
+                    </Button>
+                    <Button
+                      block
+                      warning
+                      style={{ marginTop: 15 }}
+                      onPress={() => {
                         // @TODO Component <DeckSwiper> cannot re-render automatically even quiz changed
-                        this.setState({
-                            quiz: [
-                                {
-                                  question: "What is React?",
-                                  answer: "A library for managing user interfaces"
-                                },
-                                {
-                                  question: "Where do you make Ajax requests in React?",
-                                  answer: "The componentDidMount lifecycle event"
-                                }
-                              ],
-                              toggleDeckSwiper: false
-                        })
-                        setTimeout(() => this.setState({
-                            toggleDeckSwiper: true
-                        }), 0)
-                    }}
-                  >
-                    <Text>RESTART THE QUIZ</Text>
-                  </Button>
-                </View>
-              );
-            }}
-            renderItem={item => (
-              <DeckCard card={item} totalCards={quiz.length} />
-            )}
-            onSwipeRight={question => this.handleCheckQuestion(question, true)}
-            onSwipeLeft={question => this.handleCheckQuestion(question, true)}
-          />
-        </View>
-        <View style={style.checkBar}>
-          <TouchableOpacity onPress={() => this._deckSwiper._root.swipeLeft()}>
-            <Ionicons
-              name="ios-close-circle"
-              style={{ color: "#dc3545", fontSize: 64 }}
+                        this.setState({ toggleDeckSwiper: false });
+                        setTimeout(
+                          () =>
+                            this.setState({
+                              toggleDeckSwiper: true,
+                              score: 0,
+                            }),
+                          0
+                        );
+                      }}
+                    >
+                      <Text>RESTART THE QUIZ</Text>
+                    </Button>
+                  </View>
+                );
+              }}
+              renderItem={item => (
+                <QuizCard card={item} totalCards={quiz.length} onCheckQuestion={(trueOrFalse) => {
+                    if(trueOrFalse) {
+                        this._deckSwiper._root.swipeRight()
+                    } else {
+                        this._deckSwiper._root.swipeLeft()
+                    }
+                    this.handleCheckQuestion(item, trueOrFalse)
+                }} />
+              )}
+              onSwipeRight={item => this.handleCheckQuestion(item, true)}
+              onSwipeLeft={item => this.handleCheckQuestion(item, false)}
             />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this._deckSwiper._root.swipeRight()}>
-            <Ionicons
-              name="ios-checkmark-circle"
-              style={{ color: "#28a745", fontSize: 64 }}
-            />
-          </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )
     );
   }
 }
 
 const { height, width } = Dimensions.get("window");
 const style = StyleSheet.create({
-  checkBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingLeft: 50,
-    paddingRight: 50,
-    position: "absolute",
-    bottom: 30,
-    width: width
+  scoreCard: {
+    height: 500,
+    width,
+    paddingTop: 45,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 30,
+    paddingLeft: 30
   },
   card: {
     height: height - 180,
