@@ -29,6 +29,7 @@ class Quiz extends React.Component {
     header: null
   };
   state = {
+    toggleDeckSwiper: true,
     quiz: []
   };
   componentWillMount = () => {
@@ -38,11 +39,13 @@ class Quiz extends React.Component {
       quiz: deck.questions
     });
   };
-  handleCheck = (question, checkOrNot) => {};
+  handleCheckQuestion = (question, trueOrFalse) => {};
   render() {
-    const { quiz } = this.state;
+    const { navigation } = this.props;
+    const title = navigation.getParam("title");
+    const { quiz, toggleDeckSwiper } = this.state;
     return (
-      <View style={{ justifyContent: "center", flex: 1 }}>
+      toggleDeckSwiper && <View style={{ justifyContent: "center", flex: 1 }}>
         <StatusBar barStyle={"dark-content"} />
         <View style={{ flex: 2, paddingTop: 45 }}>
           <DeckSwiper
@@ -55,18 +58,62 @@ class Quiz extends React.Component {
                 return q;
               })
             }
+            renderEmpty={() => {
+              return (
+                <View
+                  style={{
+                    height: 500,
+                    width,
+                    paddingTop: 45,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingRight: 30,
+                    paddingLeft: 30
+                  }}
+                >
+                  <Text style={{ fontSize: 24 }}>Score: {100}</Text>
+                  <Button
+                    block
+                    style={{ marginTop: 15 }}
+                    onPress={() => navigation.goBack(null)}
+                  >
+                    <Text>GO BACK TO {title} DECK</Text>
+                  </Button>
+
+                  <Button
+                    block
+                    warning
+                    style={{ marginTop: 15 }}
+                    onPress={() => {
+                        // @TODO Component <DeckSwiper> cannot re-render automatically even quiz changed
+                        this.setState({
+                            quiz: [
+                                {
+                                  question: "What is React?",
+                                  answer: "A library for managing user interfaces"
+                                },
+                                {
+                                  question: "Where do you make Ajax requests in React?",
+                                  answer: "The componentDidMount lifecycle event"
+                                }
+                              ],
+                              toggleDeckSwiper: false
+                        })
+                        setTimeout(() => this.setState({
+                            toggleDeckSwiper: true
+                        }), 0)
+                    }}
+                  >
+                    <Text>RESTART THE QUIZ</Text>
+                  </Button>
+                </View>
+              );
+            }}
             renderItem={item => (
               <DeckCard card={item} totalCards={quiz.length} />
             )}
-            onSwipeRight={(...rest) => {
-              console.log(rest);
-            }}
-            onSwipeLeft={this.handleCheck(false)}
-            renderEmpty={() => (
-              <View>
-                <Text>123123</Text>
-              </View>
-            )}
+            onSwipeRight={question => this.handleCheckQuestion(question, true)}
+            onSwipeLeft={question => this.handleCheckQuestion(question, true)}
           />
         </View>
         <View style={style.checkBar}>
