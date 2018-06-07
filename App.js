@@ -7,6 +7,7 @@ import {
   StyleSheet,
   StatusBar
 } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import { createStore } from "redux";
 import reducer from "./reducers/index";
 import { createStackNavigator } from "react-navigation";
@@ -15,6 +16,7 @@ import Home from "./screens/Home";
 import Expo from "expo";
 import DeckDetail from "./screens/DeckDetail";
 import Quiz from "./screens/Quiz";
+import DeckForm from "./screens/DeckForm"
 
 class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -32,12 +34,12 @@ class SettingsScreen extends React.Component {
 const Tabs = createStackNavigator(
   {
     Home: Home,
-    Settings: SettingsScreen,
+    Settings: DeckForm,
     Deck: DeckDetail,
     Quiz: Quiz
   },
   {
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       headerStyle: {
         backgroundColor: "#1c262f"
       },
@@ -47,8 +49,16 @@ const Tabs = createStackNavigator(
       headerBackTitle: null,
       headerBackTitleStyle: {
         color: "#fff"
-      }
-    }
+      },
+      headerLeft:  (
+        <TouchableOpacity
+          style={{ marginLeft: 15 }}
+          onPress={() => navigation.goBack()}
+        >
+          <FontAwesome name="angle-left" size={24} color={"#fff"} />
+        </TouchableOpacity>
+      )
+    })
   }
 );
 

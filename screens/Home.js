@@ -21,7 +21,7 @@ class AddDeckButton extends React.Component {
 const DeckItem = function({ deck, navigation }) {
   return (
     <CardItem bordered button onPress={() => navigation.navigate('Deck', {
-        deck
+        title: deck.title
     })}>
       <Body style={style.item}>
         <Text>{deck.title} <MaterialCommunityIcons name="cards-outline" size={24} /> {deck.questions.length}</Text>
@@ -33,6 +33,7 @@ const DeckItem = function({ deck, navigation }) {
 class Home extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: "Decks",
+    headerLeft: null,
     headerRight: <AddDeckButton navigation={navigation} />
   });
   componentDidMount() {

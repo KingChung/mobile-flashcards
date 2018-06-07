@@ -23,9 +23,7 @@ import CardForm from "./../components/CardForm";
 
 class DeckDetail extends React.Component {
   static navigationOptions = ({ navigation }) => {
-    const { title } = navigation.getParam("deck", {
-      title: "Deck Details"
-    });
+    const title = navigation.getParam("title");
     const handleCreateNewCard = navigation.getParam(
       "handleCreateNewCard",
       new Function()
@@ -56,7 +54,7 @@ class DeckDetail extends React.Component {
   };
   render() {
     const { navigation, decks } = this.props;
-    const { title } = navigation.getParam("deck");
+    const title = navigation.getParam("title");
     const { questions } = decks[title];
     return this.state.isCardModalVisible ? (
       <Modal
@@ -65,7 +63,10 @@ class DeckDetail extends React.Component {
         transparent={false}
         visible={this.state.isCardModalVisible}
       >
-        <TouchableOpacity style={{ position: "absolute", top: 40, right: 20, zIndex: 99 }} onPress={() => this.setCardModalVisible(false)}>
+        <TouchableOpacity
+          style={{ position: "absolute", top: 40, right: 20, zIndex: 99 }}
+          onPress={() => this.setCardModalVisible(false)}
+        >
           <FontAwesome name="times" size={24} />
         </TouchableOpacity>
         <CardForm
@@ -73,15 +74,15 @@ class DeckDetail extends React.Component {
           title={title}
         />
       </Modal>
-    ) : (
+    ) : questions.length ? (
       <Container>
         <View style={{ flex: 1 }}>
           <DeckSwiper
             dataSource={questions.map((q, index) => {
               return {
-                ...q, 
-                index: index + 1,
-              }
+                ...q,
+                index: index + 1
+              };
             })}
             renderItem={item => (
               <DeckCard card={item} totalCards={questions.length} />
@@ -90,12 +91,23 @@ class DeckDetail extends React.Component {
         </View>
         <TouchableOpacity
           style={style.fixedFooter}
-          onPress={() => this.props.navigation.navigate("Quiz", {title})}
+          onPress={() => this.props.navigation.navigate("Quiz", { title })}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>
-            Start Quiz
-          </Text>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Start Quiz</Text>
         </TouchableOpacity>
+      </Container>
+    ) : (
+      <Container>
+        <Body style={{ justifyContent: "center" }}>
+          <Text style={{ fontSize: 24 }}>Oh~~~There is no question here.</Text>
+          <Button
+            block
+            style={{ marginTop: 15 }}
+            onPress={() => this.setCardModalVisible(true)}
+          >
+            <Text>New a Card</Text>
+          </Button>
+        </Body>
       </Container>
     );
   }
@@ -114,7 +126,7 @@ const style = StyleSheet.create({
     padding: 15,
     backgroundColor: "rgb(0, 179, 134)"
   }
-})
+});
 
 const mapStateToProps = state => {
   const { decks } = state;

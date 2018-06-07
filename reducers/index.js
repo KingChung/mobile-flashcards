@@ -27,19 +27,20 @@ const DEFAULTDECKS = {
   }
 }
 const decks = (state = DEFAULTDECKS, action) => {
+    const { title } = action
     switch (action.type) {
         case ADD_DECK:
-            const { deck } = action
             return {
                 ...state,
-                [deck.title]: deck
+                [title]: {
+                  title,
+                  questions: []
+                }
             }
-            break;
         case REQUEST_DECKS:
             return state
         case ADD_CARD:
-            const { title, card } = action
-            console.log(title, card);
+            const { card } = action
             return {
               ...state,
               [title]: {
