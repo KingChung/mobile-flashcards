@@ -8,7 +8,8 @@ import {
   StatusBar
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { createStore } from "redux";
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
 import reducer from "./reducers/index";
 import { createStackNavigator } from "react-navigation";
 import { Provider } from "react-redux";
@@ -16,7 +17,8 @@ import Home from "./screens/Home";
 import Expo from "expo";
 import DeckDetail from "./screens/DeckDetail";
 import Quiz from "./screens/Quiz";
-import DeckForm from "./screens/DeckForm"
+import DeckForm from "./screens/DeckForm";
+import { saveDecks } from "./utils/api";
 
 class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -50,7 +52,7 @@ const Tabs = createStackNavigator(
       headerBackTitleStyle: {
         color: "#fff"
       },
-      headerLeft:  (
+      headerLeft: (
         <TouchableOpacity
           style={{ marginLeft: 15 }}
           onPress={() => navigation.goBack()}
@@ -62,7 +64,14 @@ const Tabs = createStackNavigator(
   }
 );
 
-const store = createStore(reducer);
+const middleware = [ thunk ]
+const composeEnhancers = compose
+const store = createStore(
+  reducer,
+  composeEnhancers(
+      applyMiddleware(...middleware)
+  )
+)
 export default class App extends React.Component {
   async componentWillMount() {
     await Expo.Font.loadAsync({

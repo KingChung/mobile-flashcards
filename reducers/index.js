@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { ADD_DECK, REQUEST_DECKS, ADD_CARD } from "../actions";
+import { REQUEST_DECKS, RECEIVE_DECKS, RECEIVE_DECK, RECEIVE_CARD } from "../actions";
 
 const DEFAULTDECKS = {
   React: {
@@ -26,26 +26,27 @@ const DEFAULTDECKS = {
     ]
   }
 }
-const decks = (state = DEFAULTDECKS, action) => {
+const decks = (state = {}, action) => {
     const { title } = action
     switch (action.type) {
-        case ADD_DECK:
+        case RECEIVE_DECK:
+            const { deck } = action
             return {
-                ...state,
-                [title]: {
-                  title,
-                  questions: []
-                }
+              ...state,
+              [deck.title]: deck
             }
-        case REQUEST_DECKS:
-            return state
-        case ADD_CARD:
+        case RECEIVE_DECKS:
+            return {
+              ...state,
+              ...action.decks
+            }
+        case RECEIVE_CARD:
             const { card } = action
             return {
               ...state,
               [title]: {
                 ...state[title],
-                questions: state[title].questions.concat([card])
+                questions: state[title].questions.concat(card)
               }
             }
         default:

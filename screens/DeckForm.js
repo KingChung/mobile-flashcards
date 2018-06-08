@@ -19,36 +19,39 @@ class DeckForm extends React.Component {
     title: ""
   };
   handleSaveDeck = () => {
-    this.props.dispatch(addDeck(this.state.title))
-    this.props.navigation.replace("Deck", {
-      title: this.state.title
-    }, '')
+    this.props.dispatch(addDeck(this.state.title)).then(() => {
+      this.props.navigation.replace(
+        "Deck",
+        {
+          title: this.state.title
+        },
+        ""
+      );
+    });
   };
   render() {
     return (
-        <Container>
-          <Content style={{ marginTop: 70, padding: 15 }}>
-            <Form>
-              <Item floatingLabel>
-                <Label>Title</Label>
-                <Input
-                  onChangeText={title =>
-                    this.setState({ title })
-                  }
-                  value={this.state.title}
-                />
-              </Item>
-              <Button
-                block
-                style={{ margin: 10, marginTop: 20 }}
-                onPress={this.handleSaveDeck}
-              >
-                <Text>SAVE</Text>
-              </Button>
-            </Form>
-          </Content>
-        </Container>
-    )
+      <Container>
+        <Content style={{ marginTop: 70, padding: 15 }}>
+          <Form>
+            <Item floatingLabel>
+              <Label>Title</Label>
+              <Input
+                onChangeText={title => this.setState({ title })}
+                value={this.state.title}
+              />
+            </Item>
+            <Button
+              block
+              style={{ margin: 10, marginTop: 20 }}
+              onPress={this.handleSaveDeck}
+            >
+              <Text>SAVE</Text>
+            </Button>
+          </Form>
+        </Content>
+      </Container>
+    );
   }
 }
 

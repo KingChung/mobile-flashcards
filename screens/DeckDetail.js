@@ -55,7 +55,7 @@ class DeckDetail extends React.Component {
   render() {
     const { navigation, decks } = this.props;
     const title = navigation.getParam("title");
-    const { questions } = decks[title];
+    const { questions } = decks[title]
     return this.state.isCardModalVisible ? (
       <Modal
         style={{ flex: 1 }}
@@ -130,6 +130,7 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => {
   const { decks } = state;
+  console.log( decks );
   return {
     decks
   };
