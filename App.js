@@ -55,7 +55,7 @@ const Tabs = createStackNavigator(
           style={{ marginLeft: 15 }}
           onPress={() => navigation.goBack()}
         >
-          <FontAwesome name="angle-left" size={24} color={"#fff"} />
+          <FontAwesome name="angle-left" size={32} color={"#fff"} />
         </TouchableOpacity>
       )
     })
