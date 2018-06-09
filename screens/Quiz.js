@@ -23,6 +23,7 @@ import {
   Button
 } from "native-base";
 import QuizCard from "./../components/QuizCard";
+import { updateQuizStatus, removeQuizStatus } from "../utils/api";
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -85,6 +86,7 @@ class Quiz extends React.Component {
                 if (Number.isInteger(quiz.length)) {
                   totalScore = score / quiz.length * 100;
                 }
+                removeQuizStatus(title)
                 return (
                   <View style={style.scoreCard}>
                     <Text style={{ fontSize: 24 }}>Score: {totalScore}</Text>

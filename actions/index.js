@@ -1,4 +1,4 @@
-import { getDecks, saveDeck, saveDeckTitle, addCardToDeck } from "../utils/api";
+import { getDecks, saveDeck, saveDeckTitle, addCardToDeck, updateQuizStatus } from "../utils/api";
 
 export const ADD_DECK = "ADD_DECK";
 export const REQUEST_DECKS = "REQUEST_DECKS";
@@ -33,11 +33,6 @@ export const requestDecks = () => dispatch =>
   });
 
 export const ADD_CARD = "ADD_CARD"
-// export const addCard = ({ title, card }) => ({
-//   type: ADD_CARD,
-//   title,
-//   card
-// })
 
 export const RECEIVE_CARD = "RECEIVE_CARD"
 export const receiveCard = (title, card) => ({

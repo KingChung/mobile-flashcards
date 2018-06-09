@@ -18,8 +18,8 @@ import Expo from "expo";
 import DeckDetail from "./screens/DeckDetail";
 import Quiz from "./screens/Quiz";
 import DeckForm from "./screens/DeckForm";
-import { saveDecks } from "./utils/api";
-
+import { saveDecks, getQuizStatus } from "./utils/api";
+import { askNotificationPermission, setNotification, clearLocalNotification } from "./utils/helper";
 class SettingsScreen extends React.Component {
   static navigationOptions = {
     title: "Add Deck"
@@ -72,12 +72,25 @@ const store = createStore(
       applyMiddleware(...middleware)
   )
 )
+store.subscribe(function(){
+  const state = store.getState()
+  getQuizStatus().then(quizStatus => {
+    if(quizStatus.length) {
+      setNotification()
+    } else {
+      clearLocalNotification()
+    }
+  })
+})
 export default class App extends React.Component {
   async componentWillMount() {
     await Expo.Font.loadAsync({
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
     });
+  }
+  componentDidMount = () => {
+    askNotificationPermission()
   }
   render() {
     return (

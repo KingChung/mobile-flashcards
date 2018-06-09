@@ -13,6 +13,7 @@ import {
   Item,
   Button
 } from "native-base";
+import { updateQuizStatus } from "../utils/api";
 
 class DeckForm extends React.Component {
   state = {
@@ -20,6 +21,7 @@ class DeckForm extends React.Component {
   };
   handleSaveDeck = () => {
     this.props.dispatch(addDeck(this.state.title)).then(() => {
+      updateQuizStatus(this.state.title)
       this.props.navigation.replace(
         "Deck",
         {

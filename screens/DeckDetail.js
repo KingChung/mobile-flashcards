@@ -130,7 +130,6 @@ const style = StyleSheet.create({
 
 const mapStateToProps = state => {
   const { decks } = state;
-  console.log( decks );
   return {
     decks
   };
