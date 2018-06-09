@@ -27,7 +27,7 @@ export function setNotification() {
       if (data === null) {
         let date = new Date();
             date.setDate(date.getDate() + 1);
-            date.setHours(8);
+            date.setHours(9,0,0);
             Notifications.scheduleLocalNotificationAsync(createNotification(), {
               time: date,
               repeat: "day"
@@ -36,7 +36,7 @@ export function setNotification() {
       }
     });
 }
-clearLocalNotification()
+
 
 export function askNotificationPermission() {
     AsyncStorage.getItem(NOTIFICATION_PERMISSION_STORAGE_KEY)
